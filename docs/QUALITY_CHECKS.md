@@ -89,3 +89,9 @@ Cleanlab and other specialized libraries should be integrated where appropriate 
 ## Validation policy
 
 Every transformation has a precondition and postcondition. A transformation that breaks required schema or integrity rules cannot be published as a valid version.
+
+## Type and invalid-value detection
+
+The system should infer candidate types, measure parse success, and test values against schema constraints. It should show representative failures rather than silently coercing them. A type conversion or invalid-value replacement becomes a recommendation with confidence, affected-row count, and risk level.
+
+Low-confidence findings remain warnings. ClearSet does not automatically modify uncertain values.

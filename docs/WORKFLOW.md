@@ -62,6 +62,18 @@ The result is checked against the schema and quality rules. A valid output becom
 
 The user can download the dataset, quality report, audit history, and structured cleaning recipe. Python or SQL can be generated from the recipe where supported.
 
+## First-screen experience
+
+After analysis completes, the first screen shows the dataset name, row and column counts, quality-score components, highest-severity issues, missingness summary, duplicate count, and actions to inspect issues or start a preview.
+
+## Change inspection
+
+The preview table highlights changed cells, filters to affected rows, and identifies the operation responsible for each change. Version comparison includes schema, row and column counts, quality components, changed columns, affected rows, and representative samples.
+
+## Recipe reuse
+
+Recipes are saved per project and can be applied to compatible future datasets. If the schema does not match, ClearSet stops and reports the mismatch instead of applying a partial recipe.
+
 ## Job states
 
 ```text

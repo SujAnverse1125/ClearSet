@@ -24,6 +24,8 @@ SQLite + local file storage
 
 This supports personal CSV, Excel, JSON, and Parquet workflows.
 
+The initial configurable file limit is 2 GB per file. Profiling should use samples, transformations should stream where possible, and larger files should use DuckDB and partitioned Parquet rather than assuming the entire dataset fits in memory.
+
 ## Stage 2: background jobs
 
 Large operations move to workers through a queue:
@@ -55,6 +57,8 @@ The profiler and transformation interfaces should remain stable when the executi
 ## Stage 5: collaboration
 
 Add organizations, workspaces, projects, permissions, API keys, encrypted storage, usage limits, and dataset deletion policies.
+
+The first external API should be versioned and introduced before scheduled jobs, CI/CD integrations, webhooks, Airflow, Dagster, or Prefect adapters. Database connectors should be read-oriented initially; direct source updates require a separate opt-in design with transactions and rollback guarantees.
 
 ## Scaling dimensions
 
