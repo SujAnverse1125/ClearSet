@@ -46,6 +46,30 @@ Recommended initial stack:
 
 The API is the control plane. It manages datasets, users, jobs, metadata, permissions, and audit events. Workers are the data plane. They profile and transform datasets without making the API wait for large operations.
 
+### Architecture at a glance
+
+```text
+User
+  -> Web Interface
+  -> FastAPI API
+       -> Access and file checks
+       -> Dataset catalog and audit history
+       -> Job manager
+            -> Processing worker
+                 -> Connector manager
+                 -> Schema and profiling
+                 -> Issue detection
+                 -> Recommendations
+                 -> Safe preview
+                 -> Approved transformations
+                 -> Output validation
+                 -> Immutable dataset version
+                      -> Local or object storage
+                      -> Reports and exports
+```
+
+The Mermaid version below provides the visual architecture when Markdown preview is enabled.
+
 ```mermaid
 flowchart TB
     User[User] --> UI[Web Interface]
@@ -55,7 +79,7 @@ flowchart TB
     API --> Queue[Job Manager]
     Queue --> Worker[Stateless Processing Worker]
     Worker --> Connector[Connector Manager]
-    Connector --> Formats[CSV | Excel | JSON | Parquet | Database]
+    Connector --> Formats[CSV, Excel, JSON, Parquet, Database]
     Worker --> Schema[Schema and Type Inference]
     Worker --> Profile[Profiling Engine]
     Worker --> Detect[Issue Detection]
