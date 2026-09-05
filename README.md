@@ -1,6 +1,6 @@
 # ClearSet
 
-ClearSet is a local-first, explainable dataset-quality and cleaning assistant. It helps users understand what is wrong with a dataset, choose safe corrections, preview the result, validate the output, and preserve every approved change as a reversible version.
+ClearSet is a local-first, explainable dataset-quality and cleaning Buuddy. It helps users understand what is wrong with a dataset, choose safe corrections, preview the result, validate the output, and preserve every approved change as a reversible version.
 
 The project is intended for personal projects first, with an architecture that can later support teams, databases, cloud storage, large datasets, and machine-learning workflows.
 
