@@ -98,6 +98,13 @@ flowchart TB
 
 ## Documentation
 
+### Diagrams
+
+- [Architecture diagram](docs/ARCHITECTURE.md#visible-architecture-flow): components, data plane, control plane, storage, and workers
+- [Processing workflow diagram](docs/WORKFLOW.md#visible-workflow): upload, profile, recommend, preview, validate, version, and export
+
+### Documentation files
+
 - [Product brief](docs/PRODUCT_BRIEF.md): purpose, users, value, and scope
 - [Architecture](docs/ARCHITECTURE.md): components, boundaries, storage, and scaling design
 - [Workflow](docs/WORKFLOW.md): detailed upload-to-export behavior
