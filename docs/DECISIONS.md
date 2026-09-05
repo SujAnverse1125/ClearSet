@@ -65,7 +65,7 @@ The working product name is ClearSet. The planned repository is `SujAnverse1125/
 | Lineage identifiers | Use a stable row identifier when present; otherwise store reproducible row-selection rules and dataset hashes |
 | Built-in rules | Missingness, types, ranges, formats, categories, duplicates, uniqueness, consistency, and integrity |
 | Custom rules | Start with Pandera or structured JSON rules; add UI rule editing later |
-| Rule configuration | Project-level configuration, with explainable default quality-score weights |
+| Rule configuration | Project-level configuration later, with explainable default quality-score weights initially |
 | ML target and split | User selects the target and supplies or configures the train/test split |
 | ML dependencies | Keep Cleanlab optional until the core data workflow is stable |
 | PII handling | Detect and warn before hosted deployment; masking and encryption are required for hosted sensitive data |

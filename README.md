@@ -22,7 +22,7 @@ ClearSet must never silently overwrite an original dataset. The original input r
 - User approval before transformations are applied
 - Reversible transformations and immutable dataset versions
 - Audit history and data lineage
-- CSV, Excel, JSON, and Parquet support initially
+- CSV and Parquet support in the first release; Excel and JSON are planned next
 - Database and object-storage connectors later
 - Exportable JSON cleaning recipes, Python code, SQL where possible, and quality reports
 - Optional machine-learning checks for label errors, leakage, imbalance, and duplicates
