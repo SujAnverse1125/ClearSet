@@ -2,6 +2,30 @@
 
 ## End-to-end lifecycle
 
+### Visible workflow
+
+```text
+Upload dataset
+    -> Check file and access
+    -> Register dataset
+    -> Detect format and schema
+    -> Generate profile
+    -> Detect issues
+    -> Generate recommendations
+    -> Select actions
+    -> Create transformation plan
+    -> Preview changes
+    -> Validate preview
+    -> Approve or revise
+    -> Apply transformations
+    -> Validate final output
+    -> Create immutable version
+    -> Save lineage and audit event
+    -> Export dataset, report, and recipe
+```
+
+The Mermaid version below provides the rendered visual form of the same workflow.
+
 ```mermaid
 flowchart LR
     Upload[Upload or select dataset] --> Security[Check file and access]

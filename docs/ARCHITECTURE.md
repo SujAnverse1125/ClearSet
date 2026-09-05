@@ -6,6 +6,33 @@ ClearSet starts as a modular monolith with clear internal boundaries. This is si
 
 ## Detailed component flow
 
+### Visible architecture flow
+
+```text
+User
+  -> React web interface
+  -> FastAPI application API
+	  -> Authentication and file security
+	  -> Dataset catalog
+	  -> Job manager
+	  -> Audit and lineage service
+		  -> Direct execution or Redis queue
+			  -> Stateless processing worker
+				  -> Connector manager
+				  -> Schema registry
+				  -> Profiling engine
+				  -> Issue detection
+				  -> Recommendation engine
+				  -> Transformation planner
+				  -> Safe preview
+				  -> Transformation engine
+				  -> Validation engine
+					  -> Immutable dataset version
+						  -> Versioned data and reports
+```
+
+The Mermaid version below provides the rendered visual form of the same architecture.
+
 ```mermaid
 flowchart TB
 	User[User] --> UI[React Web Interface]
