@@ -2,6 +2,36 @@
 
 This file cross-checks the capabilities discussed during planning against the documentation and planned implementation.
 
+## Requirements map
+
+### Visible requirements flow
+
+```text
+User needs
+  -> Understand data
+	  -> Profiling and issue detection
+  -> Clean safely
+	  -> Recommendations, preview, approval, validation
+  -> Preserve trust
+	  -> Versions, audit log, lineage, reproducible recipes
+  -> Support growth
+	  -> Connectors, workers, storage, ML checks, integrations
+```
+
+The Mermaid version maps the requirement groups to the ClearSet modules that implement them.
+
+```mermaid
+flowchart LR
+    Needs[User Needs] --> Understand[Understand Data]
+    Needs --> Clean[Clean Safely]
+    Needs --> Trust[Preserve Trust]
+    Needs --> Growth[Support Growth]
+    Understand --> Profiling[Profiling and Issue Detection]
+    Clean --> Safe[Recommendations, Preview, Approval, Validation]
+    Trust --> History[Versions, Audit, Lineage, Recipes]
+    Growth --> Scale[Connectors, Workers, Storage, ML, Integrations]
+```
+
 | Requirement | Covered in | Initial status |
 | --- | --- | --- |
 | Automatic profiling | README, ARCHITECTURE, WORKFLOW, QUALITY_CHECKS | Phase 1 |

@@ -2,6 +2,39 @@
 
 This file records the current answers to the product and architecture questions discussed so far.
 
+## Decision flow
+
+### Visible decision flow
+
+```text
+Personal projects
+	-> Local-first application
+	-> CSV and Parquet first
+	-> Profile before changing data
+	-> Recommend with explanations
+	-> Preview before approval
+	-> Validate after approval
+	-> Create immutable version
+	-> Keep audit history and export recipe
+	-> Add hosted, ML, and database features later
+```
+
+The Mermaid version shows how the major decisions control the first release and future growth.
+
+```mermaid
+flowchart TB
+		User[Personal Project User] --> Local[Local First]
+		Local --> Formats[CSV and Parquet First]
+		Formats --> Profile[Profile Dataset]
+		Profile --> Recommend[Explain Recommendations]
+		Recommend --> Preview[Preview Changes]
+		Preview --> Approve[User Approval]
+		Approve --> Validate[Validate Output]
+		Validate --> Version[Immutable Version]
+		Version --> Audit[Audit and Recipe Export]
+		Version --> Future[Future Hosted, ML, and Database Features]
+```
+
 ## Product decisions
 
 | Question | Current answer |
