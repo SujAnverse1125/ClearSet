@@ -39,9 +39,12 @@ flowchart LR
     Selection --> Plan[Create transformation plan]
     Plan --> Preview[Run safe preview]
     Preview --> PreviewValidation[Validate preview]
-    PreviewValidation --> Decision{User approves?}
-    Decision -->|No| Selection
-    Decision -->|Yes| Apply[Apply transformations]
+    PreviewValidation --> Decision{Reviewer decides}
+    Decision -->|Reject + reason| Rejection[Record rejected suggestion]
+    Decision -->|Defer + reason| Deferred[Record deferred suggestion]
+    Rejection --> Selection
+    Deferred --> Selection
+    Decision -->|Approve| Apply[Apply transformations]
     Apply --> OutputValidation[Validate output]
     OutputValidation --> Valid{Output valid?}
     Valid -->|No| Discard[Discard failed output]
@@ -76,7 +79,7 @@ The selected plan runs against a sample or temporary copy. The UI shows changed 
 
 ## Step 7: approval and application
 
-Only approved operations run against the selected parent version. The original and parent versions remain unchanged.
+Only approved operations run against the selected parent version. The original and parent versions remain unchanged. Every decision receives an attribution tag; rejected and deferred suggestions record the reason and do not create an output version.
 
 ## Step 8: validation and publication
 
@@ -84,7 +87,7 @@ The result is checked against the schema and quality rules. A valid output becom
 
 ## Step 9: export
 
-The user can download the dataset, quality report, audit history, and structured cleaning recipe. Python or SQL can be generated from the recipe where supported.
+The user can download the dataset, quality report, attribution history, and structured cleaning recipe as one export bundle. Python or SQL can be generated from the recipe where supported.
 
 ## First-screen experience
 

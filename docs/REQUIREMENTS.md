@@ -34,29 +34,29 @@ flowchart LR
 
 | Requirement | Covered in | Initial status |
 | --- | --- | --- |
-| Automatic profiling | README, ARCHITECTURE, WORKFLOW, QUALITY_CHECKS | Phase 1 |
-| Cleaning recommendations with explanations | PRODUCT_BRIEF, WORKFLOW, DIFFERENTIATION | Phase 1 |
-| Safe preview before modification | README, WORKFLOW, DECISIONS | Phase 1 |
-| Reversible transformations | DATA_MODEL, WORKFLOW, DECISIONS | Phase 1 |
-| Audit log | DATA_MODEL, ARCHITECTURE, SCALING | Phase 1 |
-| CSV support | README, ROADMAP, ARCHITECTURE | Phase 1 |
+| Automatic profiling | README, ARCHITECTURE, WORKFLOW, QUALITY_CHECKS | Phase 0 |
+| Cleaning recommendations with explanations | PRODUCT_BRIEF, WORKFLOW, DIFFERENTIATION | Phase 0 |
+| Safe preview before modification | README, WORKFLOW, DECISIONS | Phase 0 |
+| Reversible transformations | DATA_MODEL, WORKFLOW, DECISIONS | Phase 0 |
+| Attribution and rejection history | DATA_MODEL, WORKFLOW, DECISIONS | Phase 0 |
+| CSV support | README, ROADMAP, ARCHITECTURE | Phase 0 |
 | Excel support | ROADMAP, ARCHITECTURE | Phase 2 |
 | JSON support | ROADMAP, ARCHITECTURE | Phase 2 |
-| Parquet support | README, ROADMAP, ARCHITECTURE | Phase 1 |
+| Parquet support | README, ROADMAP, ARCHITECTURE | After validation |
 | Database connectors | ARCHITECTURE, SCALING, ROADMAP | Phase 5 |
-| Dataset versioning | DATA_MODEL, WORKFLOW, SCALING | Phase 1 |
+| Dataset versioning | DATA_MODEL, WORKFLOW, SCALING | Phase 0 |
 | Label-error checks | QUALITY_CHECKS, ROADMAP | Phase 4 |
 | Leakage checks | QUALITY_CHECKS, ROADMAP | Phase 4 |
 | Imbalance checks | QUALITY_CHECKS, ROADMAP | Phase 4 |
-| Duplicate and near-duplicate checks | QUALITY_CHECKS, ROADMAP | Phase 1 and Phase 4 |
+| Duplicate and near-duplicate checks | QUALITY_CHECKS, ROADMAP | Exact duplicates in Phase 0; near duplicates later |
 | Non-programmer web interface | PRODUCT_BRIEF, ROADMAP, ARCHITECTURE | Phase 3 |
-| Local-first privacy | PRODUCT_BRIEF, DECISIONS, OPEN_QUESTIONS | Phase 1 |
+| Local validation privacy | PRODUCT_BRIEF, DECISIONS, OPEN_QUESTIONS | Phase 0 |
 | Explainable quality score | QUALITY_CHECKS, DECISIONS | Phase 1 |
 | Schema overrides and custom rules | DATA_MODEL, DECISIONS, OPEN_QUESTIONS | Phase 2 |
-| Exportable recipes and reports | README, WORKFLOW, ROADMAP | Phase 1 |
+| Exportable recipes and reports | README, WORKFLOW, ROADMAP | Phase 0 |
 | Scaling to workers and object storage | ARCHITECTURE, SCALING | Phase 5 |
 | Security and PII handling | ARCHITECTURE, DECISIONS, OPEN_QUESTIONS | Before hosted deployment |
 
 ## Coverage result
 
-The previously discussed product capabilities, architecture, workflow, differentiation, scaling direction, and planning questions are now represented in separate files. Items marked Phase 2 or later are intentionally documented but are not part of the first implementation boundary.
+The first implementation boundary is the Phase 0 validation script against one real CSV. Items marked later are intentionally documented but must not pull infrastructure or UI work ahead of that validation gate.

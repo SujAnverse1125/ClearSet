@@ -4,10 +4,10 @@ The questions below were raised during planning. They now have working answers s
 
 ## Product
 
-- **First test case:** Choose one real CSV or Parquet dataset from a personal project before implementation.
+- **First test case:** Choose one real CSV and one person who may need to review or certify data changes; do this before adding a framework or UI.
 - **Smallest useful workflow:** Profile it, detect missing values and duplicates, preview one selected fix, validate it, create a version, and export the result.
 - **Expected size:** Support small and medium local files first; measure the actual bottleneck before selecting a distributed engine.
-- **Deployment:** Local-only first, with hosted workspaces as a later deployment mode.
+- **Deployment:** Plain Python script and local CLI first; hosted workspaces remain a paid-product hypothesis.
 
 ## Cleaning behavior
 

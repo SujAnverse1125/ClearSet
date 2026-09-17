@@ -69,6 +69,7 @@ Operations must be structured rather than stored only as arbitrary code.
 
 ```json
 {
+  "input_version": "sha256:...",
   "operations": [
     {
       "type": "rename_column",
@@ -80,26 +81,48 @@ Operations must be structured rather than stored only as arbitrary code.
       "column": "age",
       "strategy": "median"
     }
-  ]
+  ],
+  "preconditions": [],
+  "expected_effects": [],
+  "validation_rules": [],
+  "author": "reviewer@example.com",
+  "author_type": "human",
+  "created_at": "2026-09-18T12:00:00Z"
 }
 ```
 
-## Audit event
+Plans are the portable product primitive. The CLI, API, UI, and external-agent path should read and write this format rather than implement separate transformation contracts.
 
-Records who or what performed an operation, when it happened, which version was used, and what was produced.
+## Attribution event
+
+Records who or what proposed, approved, rejected, or applied an operation, when it happened, which version was used, and what was produced. The attribution tag is required and must be one of:
+
+- `human_edit`
+- `deterministic_rule`
+- `ai_suggested_human_approved`
+- `ai_suggested_human_rejected`
+- `ai_suggested_human_deferred`
 
 ```text
-AuditEvent
+AttributionEvent
   id
-  actor_id
   dataset_id
+  version_id
   parent_version_id
-  new_version_id
-  action
+  operation_id
+  attribution_tag
+  actor
+  proposer
+  model_name_and_version
+  reasoning
+  evidence
+  reviewer_reason
   operation_summary
   timestamp
   result
 ```
+
+Rejected suggestions have no output version but remain part of the audit history. This makes the decision process inspectable, not just the final file.
 
 ## Lineage
 

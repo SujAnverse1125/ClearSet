@@ -7,49 +7,51 @@ This file records the current answers to the product and architecture questions 
 ### Visible decision flow
 
 ```text
-Personal projects
+One real dataset and one real reviewer
 	-> Local-first application
-	-> CSV and Parquet first
+	-> Plain Python script first
 	-> Profile before changing data
 	-> Recommend with explanations
-	-> Preview before approval
+	-> Preview before approval or rejection
 	-> Validate after approval
 	-> Create immutable version
-	-> Keep audit history and export recipe
-	-> Add hosted, ML, and database features later
+	-> Keep attribution history and export bundle
+	-> Add API, hosted, ML, and database features only after validation
 ```
 
 The Mermaid version shows how the major decisions control the first release and future growth.
 
 ```mermaid
 flowchart TB
-		User[Personal Project User] --> Local[Local First]
-		Local --> Formats[CSV and Parquet First]
+		User[Validation Reviewer] --> Local[Local First]
+		Local --> Formats[Plain Python + CSV First]
 		Formats --> Profile[Profile Dataset]
 		Profile --> Recommend[Explain Recommendations]
 		Recommend --> Preview[Preview Changes]
 		Preview --> Approve[User Approval]
 		Approve --> Validate[Validate Output]
 		Validate --> Version[Immutable Version]
-		Version --> Audit[Audit and Recipe Export]
-		Version --> Future[Future Hosted, ML, and Database Features]
+		Version --> Audit[Attribution and Export Bundle]
+		Version --> Future[Future API, Hosted, ML, and Database Features]
 ```
 
 ## Product decisions
 
 | Question | Current answer |
 | --- | --- |
-| First user | The project owner and personal-project users |
-| Product style | Local-first, privacy-friendly dataset assistant |
-| First formats | CSV and Parquet |
-| First-release file limit | Configurable 2 GB per file, with sampling and streaming where supported |
+| First validation user | One person who reviews or certifies recurring data changes |
+| Free adoption users | Students, researchers, independent developers, and analysts |
+| Paid customer hypothesis | Compliance, risk, data-audit, and small data teams |
+| Product style | Local validation tool; hosted team evidence is the paid-product hypothesis |
+| First format | One real CSV; add Parquet only when justified |
+| First-release file limit | Unset until the representative CSV is measured |
 | Later formats | Excel, JSON, databases, and object storage |
-| First deployment | Local application |
+| First deployment | Plain Python script, then local CLI |
 | Main workflow | Profile, detect, recommend, preview, approve, validate, version, export |
 | Automatic changes | Not allowed without user approval |
 | Original dataset | Never overwritten |
 | Versioning | Immutable versions with parent references |
-| ML checks | Later module; warnings and recommendations first |
+| ML checks | Deferred until the deterministic attribution workflow is proven |
 | Essential version-one cleaning | Standardize names, normalize text casing, convert approved types, handle missing values, remove or flag exact duplicates, and validate ranges and formats |
 
 ## Technical decisions
@@ -63,7 +65,7 @@ flowchart TB
 | File storage | Local directories | S3 or MinIO |
 | Jobs | Direct or synchronous for small files | Redis-backed worker queue |
 | Transformation format | Structured JSON plan | Multiple execution backends |
-| UI | Simple web interface | React and TypeScript application |
+| UI | Deferred until the engine and demand are proven | React and TypeScript application |
 
 ## Safety decisions
 
@@ -91,8 +93,11 @@ The working product name is ClearSet. The planned repository is `SujAnverse1125/
 | First representative dataset | A real CSV or Parquet dataset from a personal project, selected before implementation begins |
 | First useful workflow | Profile, detect missing values and duplicates, preview a selected fix, validate it, create a version, and export it |
 | Expected first-year size | Small and medium files that fit local processing; large-file limits will be measured rather than guessed |
-| Deployment direction | Local-only for the first release, with a future hosted mode |
+| Deployment direction | Local script and CLI first; hosted team evidence is the paid-product hypothesis |
 | Automatic recommendations | Allowed; automatic application is not allowed |
+| Attribution tags | `human_edit`, `deterministic_rule`, `ai_suggested_human_approved`, `ai_suggested_human_rejected`, `ai_suggested_human_deferred` |
+| Rejected suggestions | Persist the proposed operation, evidence, reviewer, and reason; do not create a version |
+| Hosted transition gate | Require a defined customer, measurable review value, and a recurring shared-workflow need before building hosted collaboration |
 | High-risk operations | Dropping rows, changing identifiers, imputing labels, and changing target or feature columns |
 | Conflicting recommendations | Show alternatives with evidence, risk, affected-row counts, and require an explicit choice |
 | Lineage identifiers | Use a stable row identifier when present; otherwise store reproducible row-selection rules and dataset hashes |
@@ -131,7 +136,7 @@ The working product name is ClearSet. The planned repository is `SujAnverse1125/
 | --- | --- |
 | PII | Local datasets may contain PII; local processing stays on the user machine by default |
 | PII detection and masking | Required before hosted sensitive-data support; masking is optional and user-approved locally |
-| Accounts and permissions | Not required for the personal MVP; required for hosted workspaces and collaboration |
+| Accounts and permissions | Not required locally; required only for a validated hosted workspace |
 | Encryption | Local mode relies on OS file permissions; hosted mode requires TLS in transit and encrypted storage at rest |
 | Permanent deletion | Delete original files, versions, previews, reports, recipes, metadata, and queued jobs, then apply the hosted backup-retention policy |
 | Metadata and audit store | SQLite locally; PostgreSQL for hosted deployment, with audit events in the same transactional metadata system initially |

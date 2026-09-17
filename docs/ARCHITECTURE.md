@@ -2,7 +2,7 @@
 
 ## Architectural style
 
-ClearSet starts as a modular monolith with clear internal boundaries. This is simpler to develop and deploy than microservices while preserving the interfaces needed to separate services later.
+ClearSet starts as a plain Python script and deterministic engine. After the workflow is proven on real data, it can be wrapped in a modular monolith. This keeps infrastructure proportional to evidence and preserves boundaries for a later API or hosted service.
 
 ## Detailed component flow
 
@@ -10,14 +10,8 @@ ClearSet starts as a modular monolith with clear internal boundaries. This is si
 
 ```text
 User
-  -> React web interface
-  -> FastAPI application API
-	  -> Authentication and file security
-	  -> Dataset catalog
-	  -> Job manager
-	  -> Audit and lineage service
-		  -> Direct execution or Redis queue
-			  -> Stateless processing worker
+	-> Local script or CLI
+	  -> Direct deterministic execution
 				  -> Connector manager
 				  -> Schema registry
 				  -> Profiling engine
@@ -28,7 +22,7 @@ User
 				  -> Transformation engine
 				  -> Validation engine
 					  -> Immutable dataset version
-						  -> Versioned data and reports
+						  -> Attribution ledger and export bundle
 ```
 
 The Mermaid version below provides the rendered visual form of the same architecture.
@@ -38,20 +32,12 @@ flowchart TB
 	User[User] --> UI[React Web Interface]
 	UI --> API[FastAPI Application API]
 
-	API --> Security[Authentication and File Security]
-	API --> Catalog[Dataset Catalog]
-	API --> Jobs[Job Manager]
-	API --> Audit[Audit and Lineage Service]
+	CLI[Local CLI] --> Worker[Deterministic Processing Engine]
+	API[Future FastAPI API] --> Worker
 
-	Jobs --> Queue[Direct Execution or Redis Queue]
-	Queue --> Worker[Processing Worker]
-
-	Worker --> Connector[Connector Manager]
+	Worker --> Connector[CSV Connector]
 	Connector --> CSV[CSV]
-	Connector --> Excel[Excel]
-	Connector --> JSON[JSON]
-	Connector --> Parquet[Parquet]
-	Connector --> Database[Database]
+	Connector -. later .-> Formats[Parquet, Excel, JSON, Database]
 
 	Worker --> Schema[Schema Registry]
 	Worker --> Profiler[Profiling Engine]
@@ -63,15 +49,14 @@ flowchart TB
 	Worker --> Validator[Validation Engine]
 
 	Validator --> Version[Immutable Dataset Version]
-	Catalog --> Metadata[(SQLite or PostgreSQL)]
-	Audit --> AuditDB[(Audit Database)]
+	Worker --> Ledger[Attribution Ledger]
 	Connector --> Raw[(Original Data)]
 	Version --> Outputs[(Versioned Data and Reports)]
 ```
 
 The system has two logical planes:
 
-### Control plane
+### Control plane (later API)
 
 Responsible for coordination and metadata:
 
@@ -84,7 +69,7 @@ Responsible for coordination and metadata:
 - Audit events
 - Reports and status
 
-### Data plane
+### Data plane (Phase 0)
 
 Responsible for reading and processing data:
 
@@ -99,11 +84,11 @@ Responsible for reading and processing data:
 
 ## Component responsibilities
 
-### Web interface
+### Web interface (later)
 
 Provides dataset upload, profiling views, recommendations, previews, version history, reports, and exports. It should never implement cleaning logic itself.
 
-### API
+### API (later)
 
 Validates requests, authorizes access, creates jobs, returns status, and exposes metadata. Large processing must run in workers rather than blocking API requests.
 
@@ -137,7 +122,7 @@ Original data and every generated version are immutable files. Metadata stores t
 
 ## Processing contract
 
-Workers should receive a dataset location, parent version, transformation plan, and configuration. They should return an output location, result metadata, validation results, and audit events. This keeps workers stateless and makes horizontal scaling possible.
+The Phase 0 engine receives a dataset location, parent version, transformation plan, and configuration. It returns output metadata, validation results, and attribution events. A worker contract can be introduced later if file size or concurrency creates a measured bottleneck.
 
 The API should never depend on a particular dataframe library. The processing boundary should expose operations such as `inspect`, `sample`, `profile`, `validate`, `transform`, and `export`. Polars, DuckDB, SQL pushdown, or a distributed engine can implement these operations later.
 

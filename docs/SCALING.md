@@ -10,21 +10,21 @@
 6. Keep connectors behind a common interface.
 7. Scale only after measuring the actual bottleneck.
 
-## Stage 1: local single user
+## Stage 0: validation script
 
 ```text
-Web UI or Streamlit
-        |
-FastAPI or local service
+Plain Python script
         |
 Polars + DuckDB
         |
 SQLite + local file storage
 ```
 
-This supports personal CSV, Excel, JSON, and Parquet workflows.
+This supports one real CSV workflow first. Do not set a large-file limit or add a queue before measuring the representative dataset. Profiling and transformation constraints should be derived from that measurement.
 
-The initial configurable file limit is 2 GB per file. Profiling should use samples, transformations should stream where possible, and larger files should use DuckDB and partitioned Parquet rather than assuming the entire dataset fits in memory.
+## Stage 1: local CLI and API wrapper
+
+Add a CLI, then FastAPI and SQLite around the proven engine. Keep execution direct for small files.
 
 ## Stage 2: background jobs
 

@@ -1,8 +1,8 @@
 # ClearSet
 
-ClearSet is a local-first, explainable dataset-quality and cleaning Buuddy. It helps users understand what is wrong with a dataset, choose safe corrections, preview the result, validate the output, and preserve every approved change as a reversible version.
+ClearSet is a local-first evidence trail for dataset changes, with cleaning assistance. It makes every change reviewable, attributable, reproducible, and portable. Its product thesis is narrower than "AI cleans your CSV": ClearSet records what changed, why it changed, and who or what approved it.
 
-The project is intended for personal projects first, with an architecture that can later support teams, databases, cloud storage, large datasets, and machine-learning workflows.
+The local core is a validation and adoption path. The long-term paid product hypothesis is hosted, team-based evidence for compliance, risk, and data-audit teams that need to review or certify changes made by humans, rules, or AI agents.
 
 ## Core workflow
 
@@ -22,7 +22,11 @@ ClearSet must never silently overwrite an original dataset. The original input r
 - User approval before transformations are applied
 - Reversible transformations and immutable dataset versions
 - Audit history and data lineage
-- CSV and Parquet support in the first release; Excel and JSON are planned next
+- CSV support in the first experiment; Parquet is added only after the workflow works on one real dataset
+- Tool-agnostic ingestion: ClearSet should be able to audit an output and supplied recipe from another tool
+- Rejected suggestions are recorded with the reviewer and reason
+- Signed portable export bundles can be independently verified
+- One evidence record can produce reviewer and executive explanations
 - Database and object-storage connectors later
 - Exportable JSON cleaning recipes, Python code, SQL where possible, and quality reports
 - Optional machine-learning checks for label errors, leakage, imbalance, and duplicates
@@ -30,9 +34,9 @@ ClearSet must never silently overwrite an original dataset. The original input r
 
 ## Initial scope
 
-The first usable release should support CSV and Parquet files, local execution, profiling, duplicate and missing-value detection, recommendations, preview, validation, versioning, audit history, and export.
+The first usable experiment should support one real CSV, local execution, profiling, duplicate and missing-value detection, recommendations, preview, validation, versioning, attribution history, and export. Parquet and additional formats are follow-up decisions.
 
-Recommended initial stack:
+Recommended stack after the script is validated:
 
 - Python and FastAPI for the backend API
 - Polars for dataframe processing
@@ -44,28 +48,19 @@ Recommended initial stack:
 
 ## Architecture summary
 
-The API is the control plane. It manages datasets, users, jobs, metadata, permissions, and audit events. Workers are the data plane. They profile and transform datasets without making the API wait for large operations.
+The first implementation is a plain Python script with no framework. Once the deterministic workflow is proven, a FastAPI modular monolith can expose the same engine. Workers, queues, permissions, and hosted storage are later responses to measured demand, not part of Phase 0.
 
 ### Architecture at a glance
 
 ```text
 User
-  -> Web Interface
-  -> FastAPI API
-       -> Access and file checks
-       -> Dataset catalog and audit history
-       -> Job manager
-            -> Processing worker
-                 -> Connector manager
-                 -> Schema and profiling
-                 -> Issue detection
-                 -> Recommendations
-                 -> Safe preview
-                 -> Approved transformations
-                 -> Output validation
-                 -> Immutable dataset version
-                      -> Local or object storage
-                      -> Reports and exports
+  -> Local script / future CLI
+       -> Profile and detect
+       -> Explain and recommend
+       -> Preview and approve/reject
+       -> Apply and validate
+       -> Immutable version
+       -> Attribution ledger and export bundle
 ```
 
 The Mermaid version below provides the visual architecture when Markdown preview is enabled.
@@ -73,27 +68,18 @@ The Mermaid version below provides the visual architecture when Markdown preview
 ```mermaid
 flowchart TB
     User[User] --> UI[Web Interface]
-    UI --> API[FastAPI API]
-    API --> Auth[Access and File Checks]
-    API --> Catalog[Dataset Catalog]
-    API --> Queue[Job Manager]
-    Queue --> Worker[Stateless Processing Worker]
-    Worker --> Connector[Connector Manager]
-    Connector --> Formats[CSV, Excel, JSON, Parquet, Database]
-    Worker --> Schema[Schema and Type Inference]
-    Worker --> Profile[Profiling Engine]
-    Worker --> Detect[Issue Detection]
-    Worker --> Recommend[Recommendation Engine]
-    Worker --> Plan[Structured Transformation Plan]
-    Worker --> Preview[Safe Preview]
-    Worker --> Transform[Transformation Engine]
-    Worker --> Validate[Validation Engine]
-    Validate --> Version[Immutable Dataset Version]
-    Catalog --> Metadata[(SQLite or PostgreSQL)]
-    Version --> Files[(Local or Object Storage)]
-    API --> Audit[Audit and Lineage Service]
-    Audit --> AuditDB[(Audit Database)]
-    Version --> Reports[Quality Reports and Exports]
+     UI[Future React UI] --> API[Future FastAPI API]
+     CLI[Phase 1 CLI] --> Engine[Deterministic cleaning engine]
+     API --> Engine
+     Engine --> Profile[Profile and detect]
+     Profile --> Recommend[Explain and recommend]
+     Recommend --> Plan[Transformation plan]
+     Plan --> Preview[Preview]
+     Preview --> Review[Approve or reject]
+     Review --> Validate[Apply and validate]
+     Validate --> Version[Immutable version]
+     Version --> Ledger[Attribution ledger]
+     Version --> Export[Export bundle]
 ```
 
 ## Documentation
@@ -129,7 +115,13 @@ flowchart TB
 
 ## First-release boundary
 
-The first release is local-first and supports CSV and Parquet. It includes profiling, missing-value and duplicate checks, recommendations, previews, validation, immutable versions, audit history, and JSON recipe export. Excel, JSON, database connectors, ML checks, hosted workspaces, and background worker scaling follow after the end-to-end local workflow is reliable.
+Phase 0 is a plain Python script run against one real CSV. Phase 1 becomes a deterministic CLI covering profile, detect, recommend, preview, apply, validate, version, attribution, and export. Parquet, FastAPI, React, ML checks, hosted workspaces, and background workers follow only after this path works end to end.
+
+## Validation gate
+
+Before building a UI or hosted product, run the script on one real dataset and show it to one real person who might pay. The result is a product decision, not a documentation exercise: continue, change the wedge, or stop.
+
+Do not move to hosted collaboration until the local artifact shows that a defined customer uses the evidence to make a faster or more defensible change decision, and identifies a recurring shared-workflow need.
 
 ## Intended repository
 
