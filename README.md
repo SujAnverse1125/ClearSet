@@ -13,6 +13,39 @@ Inspect -> Profile -> Detect -> Recommend -> Preview -> Validate
 
 ClearSet must never silently overwrite an original dataset. The original input remains available, and every approved transformation creates a new dataset version.
 
+## Processing workflow
+
+This is the user-facing flow. The `User / Reviewer` starts the process, reviews the proposed change, and decides whether it should be approved, rejected, or deferred.
+
+```mermaid
+flowchart LR
+     User[User / Reviewer] --> Upload[Select dataset]
+     Upload --> Profile[Profile dataset]
+     Profile --> Detect[Detect issues]
+     Detect --> Recommend[Explain and recommend]
+     Recommend --> Preview[Show before and after]
+     Preview --> Decision{User decision}
+
+     Decision -->|Approve| Apply[Apply approved plan]
+     Decision -->|Reject + reason| Rejected[Record rejected suggestion]
+     Decision -->|Defer + reason| Deferred[Record deferred suggestion]
+
+     Rejected --> Ledger[Update attribution ledger]
+     Deferred --> Ledger
+     Rejected --> Recommend
+     Deferred --> Recommend
+
+     Apply --> Validate[Validate output]
+     Validate -->|Fails| Failure[Discard output and record failure]
+     Validate -->|Passes| Version[Create immutable version]
+     Version --> Ledger
+     Version --> Export[Create signed export bundle]
+     Ledger --> Export
+     Export --> Verify[User or auditor verifies bundle]
+```
+
+The main path is `select -> profile -> detect -> recommend -> preview -> approve -> validate -> version -> export`. Rejected and deferred proposals return to recommendations but remain in the ledger, so the final record shows decisions that were not applied as well as changes that were accepted.
+
 ## Main capabilities
 
 - Automatic dataset profiling
