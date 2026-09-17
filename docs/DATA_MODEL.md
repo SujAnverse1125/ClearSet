@@ -35,6 +35,65 @@ DatasetVersion
 
 Versions form a history tree rather than an overwrite chain, so alternative cleaning approaches can be compared.
 
+```mermaid
+classDiagram
+  Dataset "1" --> "many" DatasetVersion
+  DatasetVersion "1" --> "many" Issue
+  Issue "1" --> "many" Recommendation
+  Recommendation "1" --> "1" TransformationPlan
+  TransformationPlan "1" --> "many" AttributionEvent
+  DatasetVersion "1" --> "many" AttributionEvent
+  DatasetVersion "1" --> "1" ValidationResult
+  DatasetVersion "1" --> "1" ExportBundle
+
+  class DatasetVersion {
+    id
+    parent_version_id
+    content_hash
+    schema_id
+    quality_score
+  }
+  class Issue {
+    type
+    severity
+    confidence
+    evidence
+    affected_row_count
+  }
+  class Recommendation {
+    action_type
+    explanation
+    risk_level
+    estimated_effect
+  }
+  class TransformationPlan {
+    input_version
+    operations
+    preconditions
+    validation_rules
+    author_type
+  }
+  class AttributionEvent {
+    attribution_tag
+    actor
+    proposer
+    reasoning
+    reviewer_reason
+    result
+  }
+  class ValidationResult {
+    schema_status
+    quality_status
+    checks
+  }
+  class ExportBundle {
+    source_hash
+    plan_hash
+    ledger_hash
+    signature
+  }
+```
+
 ## Issue
 
 ```text
@@ -122,7 +181,7 @@ AttributionEvent
   result
 ```
 
-Rejected suggestions have no output version but remain part of the audit history. This makes the decision process inspectable, not just the final file.
+Rejected and deferred suggestions have no output version but remain part of the audit history. This makes the decision process inspectable, not just the final file.
 
 ## Lineage
 

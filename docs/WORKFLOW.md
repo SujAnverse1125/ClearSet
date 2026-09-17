@@ -28,29 +28,31 @@ The Mermaid version below provides the rendered visual form of the same workflow
 
 ```mermaid
 flowchart LR
-    Upload[Upload or select dataset] --> Security[Check file and access]
-    Security --> Register[Register dataset]
-    Register --> Format[Detect format]
-    Format --> Schema[Infer or load schema]
-    Schema --> Profile[Generate profile]
-    Profile --> Issues[Detect issues]
+    Upload[Select real CSV] --> Hash[Hash and preserve original]
+    Hash --> Schema[Infer or load schema]
+    Schema --> Profile[Profile dataset]
+    Profile --> Issues[Detect issues with evidence]
     Issues --> Recommendations[Generate recommendations]
-    Recommendations --> Selection[User selects actions]
-    Selection --> Plan[Create transformation plan]
-    Plan --> Preview[Run safe preview]
-    Preview --> PreviewValidation[Validate preview]
+    Recommendations --> Selection[Reviewer selects a proposal]
+    Selection --> Plan[Create structured plan]
+    Plan --> Preview[Run before and after preview]
+    Preview --> PreviewValidation[Validate preview effects]
     PreviewValidation --> Decision{Reviewer decides}
-    Decision -->|Reject + reason| Rejection[Record rejected suggestion]
-    Decision -->|Defer + reason| Deferred[Record deferred suggestion]
+    Decision -->|Reject + reason| Rejection[Record rejected event]
+    Decision -->|Defer + reason| Deferred[Record deferred event]
+    Rejection --> Ledger[Append attribution ledger]
+    Deferred --> Ledger
     Rejection --> Selection
     Deferred --> Selection
-    Decision -->|Approve| Apply[Apply transformations]
-    Apply --> OutputValidation[Validate output]
+    Decision -->|Approve| Apply[Apply deterministic operations]
+    Apply --> OutputValidation[Validate final output]
     OutputValidation --> Valid{Output valid?}
-    Valid -->|No| Discard[Discard failed output]
+    Valid -->|No| Discard[Discard output and record failure]
     Valid -->|Yes| Version[Create immutable version]
-    Version --> Audit[Write lineage and audit event]
-    Audit --> Export[Export data, report, and recipe]
+    Version --> Lineage[Store row and column lineage]
+    Lineage --> Ledger
+    Ledger --> Bundle[Build signed export bundle]
+    Bundle --> Verify[Verify bundle offline]
 ```
 
 ## Step 1: intake

@@ -23,16 +23,24 @@ The Mermaid version shows how the major decisions control the first release and 
 
 ```mermaid
 flowchart TB
-		User[Validation Reviewer] --> Local[Local First]
-		Local --> Formats[Plain Python + CSV First]
-		Formats --> Profile[Profile Dataset]
-		Profile --> Recommend[Explain Recommendations]
-		Recommend --> Preview[Preview Changes]
-		Preview --> Approve[User Approval]
-		Approve --> Validate[Validate Output]
-		Validate --> Version[Immutable Version]
-		Version --> Audit[Attribution and Export Bundle]
-		Version --> Future[Future API, Hosted, ML, and Database Features]
+		User[Validation reviewer] --> Local[Local validation script]
+		Local --> Input[Real CSV and source hash]
+		Input --> Profile[Profile and detect]
+		Profile --> Recommend[Explain recommendations]
+		Recommend --> Preview[Preview before changing]
+		Preview --> Decision{Approve, reject, or defer}
+		Decision -->|Reject or defer| Record[Record reason and evidence]
+		Decision -->|Approve| Apply[Apply deterministic plan]
+		Apply --> Validate[Validate output]
+		Validate -->|Pass| Version[Immutable version]
+		Validate -->|Fail| Failure[Discard and record failure]
+		Record --> Ledger[Attribution ledger]
+		Version --> Ledger
+		Ledger --> Export[Signed export bundle]
+		Export --> Verify[Offline verification]
+		Verify --> Gate{Evidence supports a real review decision?}
+		Gate -->|Yes| Hosted[Consider hosted team evidence]
+		Gate -->|No| Iterate[Refine wedge and repeat validation]
 ```
 
 ## Product decisions

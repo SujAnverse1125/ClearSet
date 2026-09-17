@@ -29,29 +29,47 @@ The Mermaid version below provides the rendered visual form of the same architec
 
 ```mermaid
 flowchart TB
-	User[User] --> UI[React Web Interface]
-	UI --> API[FastAPI Application API]
+	User[Reviewer] --> CLI[Local script or CLI]
+	UI[Future React UI] --> API[Future FastAPI API]
+	CLI --> Engine[Deterministic processing engine]
+	API --> Engine
 
-	CLI[Local CLI] --> Worker[Deterministic Processing Engine]
-	API[Future FastAPI API] --> Worker
+	subgraph Phase0[Phase 0 local data plane]
+		Engine --> Intake[File checks and content hash]
+		Intake --> Connector[CSV connector]
+		Connector --> Raw[(Immutable original)]
+		Engine --> Schema[Schema and type inference]
+		Engine --> Profiler[Profiling engine]
+		Profiler --> Detector[Issue detection]
+		Detector --> Recommender[Recommendation engine]
+		Recommender --> Planner[Transformation planner]
+		Planner --> Preview[Preview runner]
+		Preview --> Review{Approve, reject, or defer}
+		Review -->|Approve| Transformer[Deterministic transformation engine]
+		Review -->|Reject or defer| Decision[Decision record]
+		Transformer --> Validator[Validation engine]
+		Validator -->|Pass| Version[Immutable version store]
+		Validator -->|Fail| Failure[Failed output record]
+	end
 
-	Worker --> Connector[CSV Connector]
-	Connector --> CSV[CSV]
-	Connector -. later .-> Formats[Parquet, Excel, JSON, Database]
+	subgraph Trust[Evidence and verification]
+		Decision --> Ledger[Attribution ledger]
+		Version --> Ledger
+		Version --> Lineage[Row and column lineage]
+		Validator --> Results[Validation results]
+		Ledger --> Bundle[Signed export bundle]
+		Lineage --> Bundle
+		Results --> Bundle
+		Bundle --> Verify[Offline verifier]
+	end
 
-	Worker --> Schema[Schema Registry]
-	Worker --> Profiler[Profiling Engine]
-	Worker --> Detector[Issue Detection]
-	Worker --> Recommender[Recommendation Engine]
-	Worker --> Planner[Transformation Planner]
-	Worker --> Preview[Preview Runner]
-	Worker --> Transformer[Transformation Engine]
-	Worker --> Validator[Validation Engine]
-
-	Validator --> Version[Immutable Dataset Version]
-	Worker --> Ledger[Attribution Ledger]
-	Connector --> Raw[(Original Data)]
-	Version --> Outputs[(Versioned Data and Reports)]
+	subgraph Hosted[Future hosted team layer]
+		API --> Catalog[Dataset and version catalog]
+		Catalog --> Workspace[Shared workspace]
+		Workspace --> Access[Permissions and retention]
+		Workspace --> Reviewers[Multi-reviewer history]
+	end
+	Connector -. later .-> Formats[Parquet, Excel, JSON, database]
 ```
 
 The system has two logical planes:

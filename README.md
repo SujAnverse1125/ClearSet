@@ -67,19 +67,42 @@ The Mermaid version below provides the visual architecture when Markdown preview
 
 ```mermaid
 flowchart TB
-    User[User] --> UI[Web Interface]
+     User[Reviewer] --> Local[Phase 0 local script]
+     User --> CLI[Phase 1 CLI]
      UI[Future React UI] --> API[Future FastAPI API]
-     CLI[Phase 1 CLI] --> Engine[Deterministic cleaning engine]
+     CLI --> Engine[Deterministic cleaning engine]
      API --> Engine
-     Engine --> Profile[Profile and detect]
-     Profile --> Recommend[Explain and recommend]
-     Recommend --> Plan[Transformation plan]
-     Plan --> Preview[Preview]
-     Preview --> Review[Approve or reject]
-     Review --> Validate[Apply and validate]
-     Validate --> Version[Immutable version]
-     Version --> Ledger[Attribution ledger]
-     Version --> Export[Export bundle]
+
+     subgraph EvidenceWorkflow[Evidence workflow]
+          Engine --> Intake[Hash and register input]
+          Intake --> Profile[Profile and detect]
+          Profile --> Recommend[Explain and recommend]
+          Recommend --> Plan[Structured transformation plan]
+          Plan --> Preview[Before and after preview]
+          Preview --> Review{Reviewer decision}
+          Review -->|Approve| Apply[Apply deterministic operations]
+          Review -->|Reject or defer| DecisionLog[Record reason and evidence]
+          Apply --> Validate[Validate output]
+          Validate -->|Pass| Version[Create immutable version]
+          Validate -->|Fail| Failed[Discard output and record failure]
+     end
+
+     subgraph TrustRecords[Trust records]
+          DecisionLog --> Ledger[Attribution ledger]
+          Version --> Ledger
+          Version --> Lineage[Row and column lineage]
+          Ledger --> Bundle[Signed export bundle]
+          Lineage --> Bundle
+          Validate --> Bundle
+          Bundle --> Verify[Offline verification]
+     end
+
+     subgraph FutureHosted[Future hosted team layer]
+          Workspace[Shared workspace]
+          Permissions[Permissions and retention]
+          Workspace --> Permissions
+          Permissions -. after validation .-> API
+     end
 ```
 
 ## Documentation
